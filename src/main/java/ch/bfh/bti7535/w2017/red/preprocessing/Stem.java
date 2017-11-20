@@ -5,7 +5,7 @@ import opennlp.tools.stemmer.PorterStemmer;
 import java.util.stream.Stream;
 
 public class Stem {
-    private static Stream<String> stem(Stream<String> stream) {
+    public static Stream<String> stem(Stream<String> stream) {
         PorterStemmer stemmer = new PorterStemmer();
         return stream.map(stemmer::stem);
     }

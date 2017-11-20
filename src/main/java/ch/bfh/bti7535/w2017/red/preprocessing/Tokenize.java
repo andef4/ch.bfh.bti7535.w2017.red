@@ -7,15 +7,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class Tokenize {
-    private static Stream<String> tokenize(Stream<String> lines) {
+    public static Stream<String> tokenize(String text) {
         List<String> words = new ArrayList<>();
         Pattern pattern = Pattern.compile("\\w+", Pattern.UNICODE_CHARACTER_CLASS);
-        lines.forEach(line -> {
-            Matcher m = pattern.matcher(line);
-            while (m.find()) {
-                words.add(m.group());
-            }
-        });
+        Matcher m = pattern.matcher(text);
+        while (m.find()) {
+            words.add(m.group());
+        }
         return words.stream();
     }
 }
