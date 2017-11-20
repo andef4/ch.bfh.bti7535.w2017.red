@@ -30,6 +30,6 @@ public class LoadFiles {
     }
 
     public static ArrayList<String> getNegativeReviews() {
-        return readFiles("data/txt_sentoken/pos/");
+        return readFiles("data/txt_sentoken/neg/");
     }
 }

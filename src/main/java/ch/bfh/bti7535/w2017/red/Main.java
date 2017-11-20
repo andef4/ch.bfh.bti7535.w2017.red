@@ -23,15 +23,31 @@ public class Main {
                 .map(Tokenize::tokenize)
                 .collect(Collectors.toList());
 
-        positiveWords.stream()
+        Baseline algorithm = new Baseline();
+
+        List<Sentiment> positiveSentiments = positiveWords.stream()
                 .map(LowerCase::lowerCase)
                 .map(Stopwords::removeStopwords)
                 .map(Stem::stem)
+                .map(algorithm::analyze)
                 .collect(Collectors.toList());
-        negativeWords.stream()
+        List<Sentiment> negativeSentiments = negativeWords.stream()
                 .map(LowerCase::lowerCase)
                 .map(Stopwords::removeStopwords)
                 .map(Stem::stem)
+                .map(algorithm::analyze)
                 .collect(Collectors.toList());
+
+        long falsePositive = positiveSentiments.stream()
+                .filter(sentiment -> sentiment == Sentiment.NEGATIVE)
+                .count();
+        long falseNegative = negativeSentiments.stream()
+                .filter(sentiment -> sentiment == Sentiment.POSITIVE)
+                .count();
+
+        System.out.printf("True Positive: %d\n", positiveSentiments.size() - falsePositive);
+        System.out.printf("False Positive: %d\n", falsePositive);
+        System.out.printf("True Negative: %d\n", negativeSentiments.size() - falseNegative);
+        System.out.printf("False Negative: %d\n", falseNegative);
     }
 }
