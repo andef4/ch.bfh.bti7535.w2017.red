@@ -106,5 +106,10 @@ buildNumber.properties
 
 # End of https://www.gitignore.io/api/java,maven,intellij
 
+# eclipse-related
+.settings/
+.project
+
 
 /data/
+.classpath
