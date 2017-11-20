@@ -1,10 +1,7 @@
 package ch.bfh.bti7535.w2017.red;
 
 
-import ch.bfh.bti7535.w2017.red.preprocessing.LoadFiles;
-import ch.bfh.bti7535.w2017.red.preprocessing.LowerCase;
-import ch.bfh.bti7535.w2017.red.preprocessing.Stem;
-import ch.bfh.bti7535.w2017.red.preprocessing.Tokenize;
+import ch.bfh.bti7535.w2017.red.preprocessing.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +24,14 @@ public class Main {
                 .collect(Collectors.toList());
 
         positiveWords.stream()
-                .map(Stem::stem)
                 .map(LowerCase::lowerCase)
+                .map(Stopwords::removeStopwords)
+                .map(Stem::stem)
                 .collect(Collectors.toList());
         negativeWords.stream()
-                .map(Stem::stem)
                 .map(LowerCase::lowerCase)
+                .map(Stopwords::removeStopwords)
+                .map(Stem::stem)
                 .collect(Collectors.toList());
     }
 }
