@@ -2,6 +2,7 @@ package ch.bfh.bti7535.w2017.red;
 
 
 import ch.bfh.bti7535.w2017.red.preprocessing.LoadFiles;
+import ch.bfh.bti7535.w2017.red.preprocessing.LowerCase;
 import ch.bfh.bti7535.w2017.red.preprocessing.Stem;
 import ch.bfh.bti7535.w2017.red.preprocessing.Tokenize;
 
@@ -25,7 +26,13 @@ public class Main {
                 .map(Tokenize::tokenize)
                 .collect(Collectors.toList());
 
-        positiveWords.stream().map(Stem::stem).collect(Collectors.toList());
-        negativeWords.stream().map(Stem::stem).collect(Collectors.toList());
+        positiveWords.stream()
+                .map(Stem::stem)
+                .map(LowerCase::lowerCase)
+                .collect(Collectors.toList());
+        negativeWords.stream()
+                .map(Stem::stem)
+                .map(LowerCase::lowerCase)
+                .collect(Collectors.toList());
     }
 }
