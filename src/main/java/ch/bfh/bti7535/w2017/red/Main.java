@@ -41,13 +41,21 @@ public class Main {
         long falsePositive = positiveSentiments.stream()
                 .filter(sentiment -> sentiment == Sentiment.NEGATIVE)
                 .count();
+        long truePositive = positiveSentiments.size() - falsePositive;
         long falseNegative = negativeSentiments.stream()
                 .filter(sentiment -> sentiment == Sentiment.POSITIVE)
                 .count();
+        long trueNegative = negativeSentiments.size() - falseNegative;
 
-        System.out.printf("True Positive: %d\n", positiveSentiments.size() - falsePositive);
+        long total = truePositive + falsePositive + trueNegative + falseNegative;
+        double accuracy = (truePositive + trueNegative) / (double)total * 100.0;
+
+        System.out.printf("True Positive: %d\n", truePositive);
         System.out.printf("False Positive: %d\n", falsePositive);
-        System.out.printf("True Negative: %d\n", negativeSentiments.size() - falseNegative);
+        System.out.printf("True Negative: %d\n", trueNegative);
         System.out.printf("False Negative: %d\n", falseNegative);
+        System.out.println();
+        System.out.printf("Accuracy: %.2f %%\n", accuracy);
+
     }
 }
