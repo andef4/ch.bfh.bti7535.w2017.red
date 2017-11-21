@@ -1,6 +1,7 @@
 package ch.bfh.bti7535.w2017.red;
 
 
+import ch.bfh.bti7535.w2017.red.algorithm.BaselineUnweighted;
 import ch.bfh.bti7535.w2017.red.preprocessing.*;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class Main {
                 .map(Tokenize::tokenize)
                 .collect(Collectors.toList());
 
-        Baseline algorithm = new Baseline();
+        BaselineUnweighted algorithm = new BaselineUnweighted();
 
         List<Sentiment> positiveSentiments = positiveWords.stream()
                 .map(LowerCase::lowerCase)

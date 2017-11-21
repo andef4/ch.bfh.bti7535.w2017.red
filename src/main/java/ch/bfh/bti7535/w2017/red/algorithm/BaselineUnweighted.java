@@ -1,5 +1,7 @@
-package ch.bfh.bti7535.w2017.red;
+package ch.bfh.bti7535.w2017.red.algorithm;
 
+
+import ch.bfh.bti7535.w2017.red.Sentiment;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,12 +12,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Baseline {
+public class BaselineUnweighted {
 
     private Set<String> positiveWords = null;
     private Set<String> negativeWords = null;
 
-    public Baseline() {
+    public BaselineUnweighted() {
         try {
             positiveWords = new HashSet<>(
                     Files.readAllLines(Paths.get("src/main/resources/positive-words.txt")));
