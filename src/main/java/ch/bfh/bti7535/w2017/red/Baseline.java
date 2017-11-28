@@ -11,29 +11,33 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Evaluate the Baseline and find out which preprocessing is good/bad.
+ * Evaluate the Baseline and find out which preprocessor is good/bad.
  * LowerCase: Does not make a difference, input text is already lower case
  * StopWords: Does not make a difference because StopWords are not in the Positive/Negative list
- * Stemming: Reduces accuracy, probably because the input words are not stemmed
+ * Stemming: Reduces accuracy
+ * Stemming of negative/positive words: Reduces accuracy
  */
 public class Baseline {
     private List<List<String>> positiveWords;
     private List<List<String>> negativeWords;
+    private BaselineUnweighted stemmedAlgorithm;
+    private BaselineUnweighted algorithm;
 
     public static void main(String args[]) {
         Baseline baseline = new Baseline();
         baseline.loadAndTokenize();
 
-        System.out.println("lowercase, stopwords, stem");
-        for (boolean stem : new Boolean[]{true, false}) {
-            for (boolean lowerCase : new Boolean[]{true, false}) {
-                for (boolean stopWords : new Boolean[]{true, false}) {
-                    System.out.printf("%b %b %b: %f\n", lowerCase, stopWords, stem,
-                            baseline.evaluate(lowerCase, stopWords, stem));
+        System.out.println("lowercase, stopwords, stem, stem words");
+        for (boolean stemWords : new Boolean[]{true, false}) {
+            for (boolean stem : new Boolean[]{true, false}) {
+                for (boolean lowerCase : new Boolean[]{true, false}) {
+                    for (boolean stopWords : new Boolean[]{true, false}) {
+                        System.out.printf("%b %b %b %b: %f\n", lowerCase, stopWords, stem, stemWords,
+                                baseline.evaluate(lowerCase, stopWords, stem, stemWords));
+                    }
                 }
             }
         }
-
     }
 
     public void loadAndTokenize() {
@@ -49,10 +53,18 @@ public class Baseline {
                 .stream()
                 .map(Tokenize::tokenize)
                 .collect(Collectors.toList());
+
+        this.stemmedAlgorithm = new BaselineUnweighted(true);
+        this.algorithm = new BaselineUnweighted(false);
     }
 
-    public double evaluate(boolean lowerCase, boolean stopWords, boolean stem) {
-        BaselineUnweighted algorithm = new BaselineUnweighted();
+    public double evaluate(boolean lowerCase, boolean stopWords, boolean stem, boolean stemWords) {
+        BaselineUnweighted algorithm;
+        if (stemWords) {
+            algorithm = this.stemmedAlgorithm;
+        } else {
+            algorithm = this.algorithm;
+        }
 
         Stream<Stream<String>> positiveStream = positiveWords.stream().map(Collection::stream);
         Stream<Stream<String>> negativeStream = negativeWords.stream().map(Collection::stream);
