@@ -13,11 +13,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * A simple algorithm which checks if a word is in the positive or
+ * negative word list (found in src/main/resources). If it is,
+ * the result value (int) will be increased/decreased by 1.
+ * If the result is positive or zero, the sentiment is positive,
+ * if negative the sentiment is negative.
+ */
 public class BaselineUnweighted {
 
     private Set<String> positiveWords = null;
     private Set<String> negativeWords = null;
 
+    /**
+     * Constructor which loads the two word lists from disk
+     * @param stem If the words in the word list should be stemmed
+     */
     public BaselineUnweighted(boolean stem) {
         try {
             List<String> positiveWordsList = Files.readAllLines(Paths.get("src/main/resources/positive-words.txt"));
@@ -34,6 +45,11 @@ public class BaselineUnweighted {
         }
     }
 
+    /**
+     * Run the algorithm on the words
+     * @param words input words
+     * @return if the sentiment of the words is positive or negative
+     */
     public Sentiment analyze(Stream<String> words) {
         List<String> wordList = words.collect(Collectors.toList());
         int value = 0;

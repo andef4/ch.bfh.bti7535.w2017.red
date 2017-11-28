@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
+/**
+ * Tokenize words with a simple regex patten "\\w+"
+ */
 public class Tokenize {
     public static List<String> tokenize(String text) {
         List<String> words = new ArrayList<>();

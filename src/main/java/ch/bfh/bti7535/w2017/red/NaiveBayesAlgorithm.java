@@ -15,6 +15,9 @@ public class NaiveBayesAlgorithm {
 
     public static void main(String[] args) throws Exception {
         // generate dataset from files
+        // Attributes are automatically created by the TextDirectoryLoader.
+        // Attributes are file name, file content and class.
+        // class is based on the subdirectory the file is found in.
         TextDirectoryLoader loader = new TextDirectoryLoader();
         loader.setDirectory(new File("data/txt_sentoken/"));
         Instances dataSet = loader.getDataSet();
@@ -24,8 +27,12 @@ public class NaiveBayesAlgorithm {
         filter.setInputFormat(dataSet);
         dataSet = Filter.useFilter(dataSet, filter);
 
+        // create naive bayes instance
+        // the evaluation below will learn the algorithm,
+        // we do not have to do this here.
         NaiveBayes naiveBayes = new NaiveBayes();
 
+        // 10-fold cross validate the model
         Evaluation eval = new Evaluation(dataSet);
         eval.crossValidateModel(naiveBayes, dataSet, 10, new Random(1));
 

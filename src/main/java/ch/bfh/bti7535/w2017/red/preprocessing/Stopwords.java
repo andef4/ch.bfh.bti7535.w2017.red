@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Remove stopwords from a list of words.
+ * The stopwords are loaded from src/main/resources/stopwords.txt
+ */
 public class Stopwords {
     public static Stream<String> removeStopwords(Stream<String> stream) {
         List<String> stopwordList;

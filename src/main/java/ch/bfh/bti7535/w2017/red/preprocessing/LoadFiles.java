@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
+/**
+ * Load review files from disk by listing files
+ * in the data/txt_sentoken directory.
+ */
 public class LoadFiles {
 
     private static ArrayList<String> readFiles(String path) {

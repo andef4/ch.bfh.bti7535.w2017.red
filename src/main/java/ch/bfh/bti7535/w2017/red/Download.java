@@ -11,6 +11,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * Downloads and extracts the reviews into the data folder
+ */
 public class Download {
     public static void main(String[] args) throws IOException {
         // download file

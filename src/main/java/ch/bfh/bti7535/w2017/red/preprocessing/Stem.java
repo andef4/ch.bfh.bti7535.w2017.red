@@ -4,6 +4,9 @@ import opennlp.tools.stemmer.PorterStemmer;
 
 import java.util.stream.Stream;
 
+/**
+ * Stem all words with the opennlp Porter stemmer
+ */
 public class Stem {
     public static Stream<String> stem(Stream<String> stream) {
         PorterStemmer stemmer = new PorterStemmer();
