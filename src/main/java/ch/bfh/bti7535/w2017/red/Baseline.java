@@ -6,6 +6,7 @@ import ch.bfh.bti7535.w2017.red.preprocessing.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,16 +29,20 @@ public class Baseline {
         baseline.loadAndTokenize();
 
         System.out.println("lowercase, stopwords, stem, stem words");
+
+        List<Result> results = new ArrayList<>();
         for (boolean stemWords : new Boolean[]{true, false}) {
             for (boolean stem : new Boolean[]{true, false}) {
                 for (boolean lowerCase : new Boolean[]{true, false}) {
                     for (boolean stopWords : new Boolean[]{true, false}) {
-                        System.out.printf("%b %b %b %b: %f\n", lowerCase, stopWords, stem, stemWords,
-                                baseline.evaluate(lowerCase, stopWords, stem, stemWords));
+                        results.add(new Result(lowerCase, stem, stemWords, stopWords,
+                                baseline.evaluate(lowerCase, stopWords, stem, stemWords)));
                     }
                 }
             }
         }
+        results.sort((r1, r2) -> - Double.compare(r1.result, r2.result));
+        results.forEach(System.out::println);
     }
 
     public void loadAndTokenize() {
@@ -100,5 +105,31 @@ public class Baseline {
 
         long total = truePositive + falsePositive + trueNegative + falseNegative;
         return (truePositive + trueNegative) / (double) total * 100.0;
+    }
+}
+
+class Result {
+    public boolean lowerCase;
+    public boolean stem;
+    public boolean stemWords;
+    public boolean stopWords;
+    public double result;
+
+    public Result(boolean lowerCase, boolean stem, boolean stemWords, boolean stopWords, double result) {
+        this.lowerCase = lowerCase;
+        this.stem = stem;
+        this.stemWords = stemWords;
+        this.stopWords = stopWords;
+        this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("| %d | %d | %d | %d | %.2f",
+                lowerCase ? 1 : 0,
+                stopWords ? 1 : 0,
+                stem ? 1 : 0,
+                stemWords ? 1 : 0,
+                result);
     }
 }
