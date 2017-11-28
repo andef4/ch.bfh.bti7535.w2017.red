@@ -6,17 +6,21 @@ import ch.bfh.bti7535.w2017.red.preprocessing.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Evaluate the Baseline and find out which preprocessor is good/bad.
+ * Evaluate the Baseline algorithm and find out which preprocessor is good/bad
+ * in combination with other preprocessors.
+ *
+ * Results:
  * LowerCase: Does not make a difference, input text is already lower case
  * StopWords: Does not make a difference because StopWords are not in the Positive/Negative list
  * Stemming: Reduces accuracy
- * Stemming of negative/positive words: Reduces accuracy
+ * Stemming of positive/negative words: Reduces accuracy
+ *
+ * TL/DR: All preprocessors are neutral/reduce the accuracy
  */
 public class Baseline {
     private List<List<String>> positiveWords;
@@ -30,6 +34,7 @@ public class Baseline {
 
         System.out.println("lowercase, stopwords, stem, stem words");
 
+        // brute force test all preprocessors
         List<Result> results = new ArrayList<>();
         for (boolean stemWords : new Boolean[]{true, false}) {
             for (boolean stem : new Boolean[]{true, false}) {
@@ -45,6 +50,10 @@ public class Baseline {
         results.forEach(System.out::println);
     }
 
+    /**
+     * Load files from the file system into memory and tokenize them.
+     * Files can be downloaded automatically with Download.java
+     */
     public void loadAndTokenize() {
         ArrayList<String> positiveReviews = LoadFiles.getPositiveReviews();
         ArrayList<String> negativeReviews = LoadFiles.getNegativeReviews();
@@ -63,6 +72,15 @@ public class Baseline {
         this.algorithm = new BaselineUnweighted(false);
     }
 
+    /**
+     * Run the baseline algorithm on the loaded words.
+     * The params define if specific preprocessors should run or not
+     * @param lowerCase make all words lower case first
+     * @param stopWords remove stopwords
+     * @param stem stem words of the dataset
+     * @param stemWords stem words in the positive/negative word list
+     * @return the accuracy in percent
+     */
     public double evaluate(boolean lowerCase, boolean stopWords, boolean stem, boolean stemWords) {
         BaselineUnweighted algorithm;
         if (stemWords) {
@@ -73,6 +91,8 @@ public class Baseline {
 
         Stream<Stream<String>> positiveStream = positiveWords.stream().map(Collection::stream);
         Stream<Stream<String>> negativeStream = negativeWords.stream().map(Collection::stream);
+
+        // run preprocessor if requeted
         if (lowerCase) {
             positiveStream = positiveStream.map(LowerCase::lowerCase);
             negativeStream = negativeStream.map(LowerCase::lowerCase);
@@ -86,6 +106,7 @@ public class Baseline {
             negativeStream = negativeStream.map(Stem::stem);
         }
 
+        // run algorithm on positive and negative words
         List<Sentiment> positiveSentiments = positiveStream
                 .map(algorithm::analyze)
                 .collect(Collectors.toList());
@@ -94,6 +115,7 @@ public class Baseline {
                 .map(algorithm::analyze)
                 .collect(Collectors.toList());
 
+        // calculate accuracy
         long falsePositive = positiveSentiments.stream()
                 .filter(sentiment -> sentiment == Sentiment.NEGATIVE)
                 .count();
@@ -108,6 +130,10 @@ public class Baseline {
     }
 }
 
+
+/**
+ * Class to hold results of the evaluation
+ */
 class Result {
     public boolean lowerCase;
     public boolean stem;
