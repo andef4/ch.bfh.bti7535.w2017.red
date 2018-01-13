@@ -1,4 +1,4 @@
-package ch.bfh.bti7535.w2017.red.word2vecrnn;
+package ch.bfh.bti7535.w2017.red.word2vecrnn.ourdataset;
 
 import org.apache.commons.io.FileUtils;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
