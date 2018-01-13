@@ -1,26 +1,52 @@
 package ch.bfh.bti7535.w2017.red;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import ch.bfh.bti7535.utilities.Arguments;
 import ch.bfh.bti7535.utilities.FileUtilities;
 import ch.bfh.bti7535.utilities.Tuple;
+import net.sf.extjwnl.JWNLException;
+import net.sf.extjwnl.data.IndexWord;
+import net.sf.extjwnl.data.POS;
+import net.sf.extjwnl.dictionary.Dictionary;
 
 
 public final class SentiWordNetSet
 {
-	private final Map<Tuple<EPosType, Integer>, Synset> k_mapSynsets;
+	private final List<Synset> k_lstSynsets;
+	private final Map<Tuple<EPosType, String>, List<SynsetTerm>> k_mapString2Synset;
+	private Dictionary m_xDictionary;
 
-
-	private SentiWordNetSet(final Map<Tuple<EPosType, Integer>, Synset> mapSynsets)
+	private SentiWordNetSet(final List<Synset> lstSynsets)
 	{
-		k_mapSynsets = new HashMap<>();
-		k_mapSynsets.putAll(mapSynsets);
+		k_lstSynsets = lstSynsets;
+		try
+		{
+			m_xDictionary = Dictionary.getDefaultResourceInstance();
+		}
+		catch(final JWNLException xException)
+		{
+			m_xDictionary = null;
+			xException.printStackTrace();
+		}
+
+		k_mapString2Synset = new HashMap<>();
+		for(final Synset xSet : k_lstSynsets)
+		{
+			for(final SynsetTerm xTerm : xSet.terms())
+			{
+				final String strName = xTerm.name();
+				final EPosType xType = xTerm.type();
+				final Tuple<EPosType, String> xKey = new Tuple<>(xType, strName);
+				if(!k_mapString2Synset.containsKey(xKey))
+				{
+					k_mapString2Synset.put(xKey, new ArrayList<>());
+				}
+				k_mapString2Synset.get(xKey).add(xTerm);
+			}
+		}
 	}
 
 	public static SentiWordNetSet fromFile(final String strPath) throws Exception
@@ -37,25 +63,47 @@ public final class SentiWordNetSet
 				final int iId = Integer.parseInt(strStuff[1], 10);
 				final double dPosScore = Double.parseDouble(strStuff[2]);
 				final double dNegScore = Double.parseDouble(strStuff[3]);
-				final List<Term> lstTerms = new ArrayList<>();
+				final List<SynsetTerm> lstTerms = new ArrayList<>();
 				for(final String strTerm : strStuff[4].split("\\s"))
 				{
 					final int iHashIndex = strTerm.indexOf('#');
 					final String strName = strTerm.substring(0, iHashIndex);
 					final int iSenseNumber = Integer.parseInt(strTerm.substring(iHashIndex + 1));
-					lstTerms.add(new Term(strName, iSenseNumber, dPosScore, dNegScore));
+					lstTerms.add(new SynsetTerm(strName, iSenseNumber));
 				}
 				final String strGlossary = strStuff[5];
-				xBuilder.addSynset(eType, iId, new Synset(dPosScore, dNegScore, lstTerms, strGlossary));
+				final Synset xSet = new Synset(eType, iId, dPosScore, dNegScore, lstTerms, strGlossary);
+				xBuilder.addSynset(xSet);
 			}
 		});
 
 		return xBuilder.build();
 	}
 
-	public List<Term> lookupAllWords(final String strWord)
+	public List<SynsetTerm> lookupWord(final EPosType eType, final String strWord)
 	{
-		final List<Term> lstTerms = new ArrayList<>();
+		String strLemma = strWord;
+		try
+		{
+			final IndexWord xWord = m_xDictionary.getIndexWord(eType.convert(), strWord);
+			if(xWord != null)
+			{
+				strLemma = xWord.getLemma();
+			}
+		}
+		catch(final JWNLException xException)
+		{
+			xException.printStackTrace();
+		}
+
+		final Tuple<EPosType, String> xKey = new Tuple<>(eType, strLemma);
+		final List<SynsetTerm> lstResult = k_mapString2Synset.get(xKey);
+		return (lstResult == null) ? new ArrayList<>() : lstResult;
+	}
+
+	public List<SynsetTerm> lookupAllWords(final String strWord)
+	{
+		final List<SynsetTerm> lstTerms = new ArrayList<>();
 		for(final EPosType eType : EPosType.values())
 		{
 			lstTerms.addAll(lookupWord(eType, strWord));
@@ -63,67 +111,60 @@ public final class SentiWordNetSet
 		return lstTerms;
 	}
 
-	public List<Term> lookupWord(final EPosType eType, final String strWord)
-	{
-		Objects.requireNonNull(eType);
-		Arguments.require(strWord, strWord != null && !strWord.isEmpty());
-
-		final List<Term> lstTerms = new ArrayList<>();
-		for(final Tuple<EPosType, Integer> xKey : k_mapSynsets.keySet())
-		{
-			if(xKey.first() != eType)
-			{
-				continue;
-			}
-
-			final Synset xSynset = k_mapSynsets.get(xKey);
-			for(final Term xTerm : xSynset.terms())
-			{
-				if(xTerm.term().equals(strWord))
-				{
-					lstTerms.add(xTerm);
-				}
-			}
-		}
-
-		return lstTerms;
-	}
-
-
 	private static class Builder
 	{
-		private final Map<Tuple<EPosType, Integer>, Synset> m_mapSynsets = new HashMap<>();
+		private final List<Synset> m_lstSynsets = new ArrayList<>();
 
-
-		public Builder addSynset(final EPosType eType, final int iId, final Synset xSynset)
+		public Builder addSynset(final Synset xSet)
 		{
-			final Tuple<EPosType, Integer> xKey = new Tuple<>(eType, iId);
-			m_mapSynsets.put(xKey, xSynset);
+			m_lstSynsets.add(xSet);
 			return this;
 		}
 
 		public SentiWordNetSet build()
 		{
-			return new SentiWordNetSet(m_mapSynsets);
+			return new SentiWordNetSet(m_lstSynsets);
 		}
 	}
 
 
 	public static class Synset
 	{
+		private final EPosType k_eType;
+		private final int k_iId;
 		private final double k_dPosScore;
 		private final double k_dNegScore;
-		private final List<Term> k_lstTerms;
+		private final List<SynsetTerm> k_lstTerms;
 		private final String k_strGlossary;
 
-
-		private Synset(final double dPosScore, final double dNegScore, final List<Term> lstTerms, final String strGlossary)
+		public Synset(final EPosType eType, final int iId, final double dPosScore, final double dNegScore, final List<SynsetTerm> lstTerms, final String strGlossary)
 		{
-			k_dPosScore = Arguments.require(dPosScore, 0.0 <= dPosScore && dPosScore <= 1.0, "Positive score out of range!");
-			k_dNegScore = Arguments.require(dNegScore, 0.0 <= dNegScore && dNegScore <= 1.0, "Negative score out of range!");
-			k_lstTerms = new ArrayList<>();
-			k_lstTerms.addAll(lstTerms);
-			k_strGlossary = Objects.requireNonNull(strGlossary);
+			k_eType = eType;
+			k_iId = iId;
+			k_dPosScore = dPosScore;
+			k_dNegScore = dNegScore;
+			k_lstTerms = lstTerms;
+			k_strGlossary = strGlossary;
+
+			for(final SynsetTerm xTerm : lstTerms)
+			{
+				xTerm.setSynset(this);
+			}
+		}
+
+		public List<SynsetTerm> terms()
+		{
+			return k_lstTerms;
+		}
+
+		public EPosType type()
+		{
+			return k_eType;
+		}
+
+		public int id()
+		{
+			return k_iId;
 		}
 
 		public double positiveScore()
@@ -134,11 +175,6 @@ public final class SentiWordNetSet
 		public double negativeScore()
 		{
 			return k_dNegScore;
-		}
-
-		public List<Term> terms()
-		{
-			return Collections.unmodifiableList(k_lstTerms);
 		}
 
 		public String glossary()
@@ -148,40 +184,56 @@ public final class SentiWordNetSet
 	}
 
 
-	public static class Term
+	public static class SynsetTerm
 	{
-		private final String k_strTerm;
+		private final String k_strName;
 		private final int k_iSenseNumber;
-		private final double k_dPosScore;
-		private final double k_dNegScore;
+		private Synset m_xSet;
 
-
-		private Term(final String strTerm, final int iSenseNumber, final double dPosScore, final double dNegScore)
+		public SynsetTerm(final String strName, final int iSenseNumber)
 		{
-			k_strTerm = Objects.requireNonNull(strTerm, "Term mustn't be null");
-			k_iSenseNumber = Arguments.require(iSenseNumber, iSenseNumber >= 1, "Sense number must be >0");
-			k_dPosScore = Arguments.require(dPosScore, 0.0 <= dPosScore && dPosScore <= 1.0, "Positive score out of range!");
-			k_dNegScore = Arguments.require(dNegScore, 0.0 <= dNegScore && dNegScore <= 1.0, "Negative score out of range!");
+			k_strName = strName;
+			k_iSenseNumber = iSenseNumber;
 		}
 
-		public String term()
+		public void setSynset(final Synset xSet)
 		{
-			return k_strTerm;
+			m_xSet = xSet;
+		}
+
+		public String name()
+		{
+			return k_strName;
+		}
+
+		public EPosType type()
+		{
+			return m_xSet.type();
+		}
+
+		public int id()
+		{
+			return m_xSet.id();
+		}
+
+		public double positiveScore()
+		{
+			return m_xSet.positiveScore();
+		}
+
+		public double negativeScore()
+		{
+			return m_xSet.negativeScore();
+		}
+
+		public Synset synset()
+		{
+			return m_xSet;
 		}
 
 		public int senseNumber()
 		{
 			return k_iSenseNumber;
-		}
-
-		public double positiveScore()
-		{
-			return k_dPosScore;
-		}
-
-		public double negativeScore()
-		{
-			return k_dNegScore;
 		}
 	}
 
@@ -208,6 +260,23 @@ public final class SentiWordNetSet
 				return eNoun;
 			default:
 				throw new IllegalArgumentException("Unknown POS-Type \"" + strData + "\"");
+			}
+		}
+
+		public POS convert()
+		{
+			switch(this)
+			{
+			case eVerb:
+				return POS.VERB;
+			case eAdjective:
+				return POS.ADJECTIVE;
+			case eAdverb:
+				return POS.ADVERB;
+			case eNoun:
+				return POS.NOUN;
+			default:
+				return null;
 			}
 		}
 	}
