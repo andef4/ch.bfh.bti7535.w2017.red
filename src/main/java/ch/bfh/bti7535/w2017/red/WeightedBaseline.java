@@ -70,7 +70,7 @@ public class WeightedBaseline
 
 			final int iNum = lstPositive.size() + lstNegative.size();
 			final Counter xCounter = new Counter(iNum);
-			final List<Double> lstPositiveScores = lstPositive.stream()
+			final List<Double> lstPositiveScores = lstPositive.parallelStream()
 					.map(Tokenize::tokenize)
 					.map(lstTokenized ->
 					{
@@ -99,7 +99,7 @@ public class WeightedBaseline
 						xCounter.reportProgress();
 						return dScore;
 					}).collect(Collectors.toList());
-			final List<Double> lstNegativeScores = lstNegative.stream()
+			final List<Double> lstNegativeScores = lstNegative.parallelStream()
 					.map(Tokenize::tokenize)
 					.map(lstTokenized ->
 					{
@@ -134,7 +134,7 @@ public class WeightedBaseline
 			final int iSeconds = (int) (lTime % 60);
 			System.out.printf("Done in %02d:%02d\n", iMinutes, iSeconds);
 
-			final int iCorrect = (int) (lstNegativeScores.stream().filter(d -> d <= 0.0).count() + lstPositiveScores.stream().filter(d -> d >= 0.0).count());
+			final int iCorrect = (int) (lstNegativeScores.parallelStream().filter(d -> d <= 0.0).count() + lstPositiveScores.parallelStream().filter(d -> d >= 0.0).count());
 			System.out.printf("Result: %g%% correct\n", 100 * iCorrect / (double) iNum);
 		}
 		catch(final JWNLException xException)
