@@ -11,6 +11,7 @@ import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
@@ -104,6 +105,7 @@ public class Word2VecSentimentRNN {
             System.out.println("Epoch " + i + " complete. Starting evaluation:");
             Evaluation evaluation = net.evaluate(test);
             System.out.println(evaluation.stats());
+            ModelSerializer.writeModel(net, String.format("./data/rnn-%d.obj", i), true);
         }
     }
 
