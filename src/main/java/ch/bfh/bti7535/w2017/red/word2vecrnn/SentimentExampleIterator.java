@@ -1,7 +1,6 @@
 package ch.bfh.bti7535.w2017.red.word2vecrnn;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -42,21 +41,16 @@ public class SentimentExampleIterator implements DataSetIterator {
     private final TokenizerFactory tokenizerFactory;
 
     /**
-     * @param dataDirectory the directory of the IMDB review data set
      * @param wordVectors WordVectors object
      * @param batchSize Size of each minibatch for training
      * @param truncateLength If reviews exceed
-     * @param train If true: return the training data. If false: return the testing data.
      */
-    public SentimentExampleIterator(String dataDirectory, WordVectors wordVectors, int batchSize, int truncateLength, boolean train) throws IOException {
+    public SentimentExampleIterator(List<File> positiveFiles, List<File> negativeFiles, WordVectors wordVectors, int batchSize, int truncateLength) throws IOException {
         this.batchSize = batchSize;
         this.vectorSize = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length;
 
-
-        File p = new File(FilenameUtils.concat(dataDirectory, "aclImdb/" + (train ? "train" : "test") + "/pos/") + "/");
-        File n = new File(FilenameUtils.concat(dataDirectory, "aclImdb/" + (train ? "train" : "test") + "/neg/") + "/");
-        positiveFiles = p.listFiles();
-        negativeFiles = n.listFiles();
+        this.positiveFiles = positiveFiles.toArray(new File[positiveFiles.size()]);
+        this.negativeFiles = negativeFiles.toArray(new File[negativeFiles.size()]);
 
         this.wordVectors = wordVectors;
         this.truncateLength = truncateLength;
