@@ -16,24 +16,24 @@ public final class StreamHelper
 	{
 	}
 
-	public static <T, U> Tuple<Stream<? extends T>, Stream<? extends U>> unzip(final Stream<Tuple<? extends T, ? extends U>> xStream)
-	{
-		final Iterator<Tuple<? extends T, ? extends U>> itIterator = xStream.iterator();
-		final Iterator<A> itT = new Iterator<A>()
-		{
-			@Override
-			public boolean hasNext()
-			{
-				return itIterator.hasNext();
-			}
-
-			@Override
-			public A next()
-			{
-				return itIterator.next();
-			}
-		}
-	}
+//	public static <T, U> Tuple<Stream<? extends T>, Stream<? extends U>> unzip(final Stream<Tuple<? extends T, ? extends U>> xStream)
+//	{
+//		final Iterator<Tuple<? extends T, ? extends U>> itIterator = xStream.iterator();
+//		final Iterator<A> itT = new Iterator<A>()
+//		{
+//			@Override
+//			public boolean hasNext()
+//			{
+//				return itIterator.hasNext();
+//			}
+//
+//			@Override
+//			public A next()
+//			{
+//				return itIterator.next();
+//			}
+//		}
+//	}
 
 	public static <T, U> Stream<Tuple<? extends T, ? extends U>> zip(final Stream<? extends T> xStreamT, final Stream<? extends U> xStreamU)
 	{

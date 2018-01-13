@@ -24,7 +24,7 @@ public final class RichStream<T>
 
 	public Tuple<Stream<T>, Stream<T>> partition(final Predicate<T> xPredicate)
 	{
-		k_xStream.map(xElem -> xPredicate.test(xElem) ? );
+		// k_xStream.map(xElem -> xPredicate.test(xElem) ? );
 		return new Tuple<>(k_xStream.filter(xPredicate), k_xStream.filter(xPredicate.negate()));
 	}
 }
