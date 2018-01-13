@@ -132,8 +132,7 @@ public final class SentiWordNetSet
 	{
 		private final EPosType k_eType;
 		private final int k_iId;
-		private final double k_dPosScore;
-		private final double k_dNegScore;
+		private final double k_dScore;
 		private final List<SynsetTerm> k_lstTerms;
 		private final String k_strGlossary;
 
@@ -141,8 +140,7 @@ public final class SentiWordNetSet
 		{
 			k_eType = eType;
 			k_iId = iId;
-			k_dPosScore = dPosScore;
-			k_dNegScore = dNegScore;
+			k_dScore = dPosScore - dNegScore;
 			k_lstTerms = lstTerms;
 			k_strGlossary = strGlossary;
 
@@ -167,14 +165,9 @@ public final class SentiWordNetSet
 			return k_iId;
 		}
 
-		public double positiveScore()
+		public double score()
 		{
-			return k_dPosScore;
-		}
-
-		public double negativeScore()
-		{
-			return k_dNegScore;
+			return k_dScore;
 		}
 
 		public String glossary()
@@ -216,14 +209,9 @@ public final class SentiWordNetSet
 			return m_xSet.id();
 		}
 
-		public double positiveScore()
+		public double score()
 		{
-			return m_xSet.positiveScore();
-		}
-
-		public double negativeScore()
-		{
-			return m_xSet.negativeScore();
+			return m_xSet.score();
 		}
 
 		public Synset synset()

@@ -1,5 +1,7 @@
 package ch.bfh.bti7535.w2017.red;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +63,7 @@ public class WeightedBaseline
 			final long lStart = System.nanoTime();	
 
 			final SentiWordNetSet xSentiSet = SentiWordNetSet.fromFile("src/main/resources/sentiwordnet.txt");
+			final List<String> lstStopwords = Files.readAllLines(Paths.get("src/main/resources/stopwords.txt"));
 
 			final List<String> lstPositive = LoadFiles.getPositiveReviews();
 			final List<String> lstNegative = LoadFiles.getNegativeReviews();
@@ -72,20 +75,24 @@ public class WeightedBaseline
 					.map(lstTokenized ->
 					{
 						double dScore = 0.0;
-						int iCount = 0;
+						double dSum = 0.0;
 						for(final String strWord : lstTokenized)
 						{
+							if(lstStopwords.contains(strWord))
+							{
+								continue;
+							}
+
 							final List<SynsetTerm> lstTerms = xSentiSet.lookupAllWords(strWord);
 							for(final SynsetTerm xTerm : lstTerms)
 							{
-								++iCount;
-								dScore += (xTerm.positiveScore() / (xTerm.senseNumber() + 1));
-								dScore -= (xTerm.negativeScore() / (xTerm.senseNumber() + 1));
+								dScore += (xTerm.score() / (double) xTerm.senseNumber());
+								dSum += 1.0 / (double) xTerm.senseNumber();
 							}
 						}
-						if(iCount > 0)
+						if(dSum != 0.0)
 						{
-							dScore /= iCount;
+							dScore /= dSum;
 						}
 
 						xCounter.count();
@@ -97,20 +104,24 @@ public class WeightedBaseline
 					.map(lstTokenized ->
 					{
 						double dScore = 0.0;
-						int iCount = 0;
+						double dSum = 0.0;
 						for(final String strWord : lstTokenized)
 						{
+							if(lstStopwords.contains(strWord))
+							{
+								continue;
+							}
+
 							final List<SynsetTerm> lstTerms = xSentiSet.lookupAllWords(strWord);
 							for(final SynsetTerm xTerm : lstTerms)
 							{
-								++iCount;
-								dScore += (xTerm.positiveScore() / (xTerm.senseNumber() + 1));
-								dScore -= (xTerm.negativeScore() / (xTerm.senseNumber() + 1));
+								dScore += (xTerm.score() / (double) xTerm.senseNumber());
+								dSum += 1.0 / (double) xTerm.senseNumber();
 							}
 						}
-						if(iCount > 0)
+						if(dSum != 0.0)
 						{
-							dScore /= iCount;
+							dScore /= dSum;
 						}
 
 						xCounter.count();
