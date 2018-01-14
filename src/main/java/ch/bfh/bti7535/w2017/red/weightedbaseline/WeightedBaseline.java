@@ -61,6 +61,8 @@ public class WeightedBaseline
 		{
 			final long lStart = System.nanoTime();	
 
+			// loads the SentiWordNet set
+			// the set contains WordNet synsets with assigned positive and negative scores, it is used for the score calculation
 			final SentiWordNetSet xSentiSet = SentiWordNetSet.fromFile("src/main/resources/sentiwordnet.txt");
 			final List<String> lstStopwords = Files.readAllLines(Paths.get("src/main/resources/stopwords.txt"));
 
@@ -69,6 +71,10 @@ public class WeightedBaseline
 
 			final int iNum = lstPositive.size() + lstNegative.size();
 			final Counter xCounter = new Counter(iNum);
+			// iterates over all tokens and assigns them a score
+			// calculates the total score for every document
+			//
+			// the score is weighted higher if the sense number is lower (higher probability of being the sense of the token)
 			final List<Double> lstPositiveScores = lstPositive.parallelStream()
 					.map(Tokenize::tokenize)
 					.map(lstTokenized ->
