@@ -28,6 +28,7 @@ import java.util.NoSuchElementException;
  * Labels/target: a single class (negative or positive), predicted at the final time step (word) of each review
  *
  * @author Alex Black
+ * @author Fabio Anderegg
  */
 public class SentimentExampleIterator implements DataSetIterator {
     private final WordVectors wordVectors;
@@ -41,6 +42,8 @@ public class SentimentExampleIterator implements DataSetIterator {
     private final TokenizerFactory tokenizerFactory;
 
     /**
+     * @param positiveFiles A list of files containing positive reviews
+     * @param negativeFiles A list of files containing negative reviews
      * @param wordVectors WordVectors object
      * @param batchSize Size of each minibatch for training
      * @param truncateLength If reviews exceed
