@@ -1,7 +1,5 @@
 package ch.bfh.bti7535.w2017.red.utilities;
 
-import ch.bfh.bti7535.utilities.RandomSplitList;
-import ch.bfh.bti7535.utilities.Tuple;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
