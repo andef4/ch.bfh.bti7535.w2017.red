@@ -30,4 +30,11 @@ public class RandomSplitList {
 
         return new Tuple<>(list1, list2);
     }
+
+    /**
+     * Make this class uninstantiable because it only contains static methods
+     */
+    private RandomSplitList() {
+
+    }
 }
