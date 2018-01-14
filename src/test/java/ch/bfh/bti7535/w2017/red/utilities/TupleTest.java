@@ -3,8 +3,6 @@ package ch.bfh.bti7535.w2017.red.utilities;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import ch.bfh.bti7535.utilities.Tuple;
-
 
 public final class TupleTest
 {
