@@ -1,12 +1,12 @@
-package ch.bfh.bti7535.w2017.red;
+package ch.bfh.bti7535.w2017.red.weightedbaseline;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.bfh.bti7535.utilities.FileUtilities;
-import ch.bfh.bti7535.utilities.Tuple;
+import ch.bfh.bti7535.w2017.red.utilities.FileUtilities;
+import ch.bfh.bti7535.w2017.red.utilities.Tuple;
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.POS;

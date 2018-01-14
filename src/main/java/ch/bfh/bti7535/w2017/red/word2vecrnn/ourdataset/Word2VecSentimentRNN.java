@@ -1,7 +1,7 @@
 package ch.bfh.bti7535.w2017.red.word2vecrnn.ourdataset;
 
-import ch.bfh.bti7535.utilities.RandomSplitList;
-import ch.bfh.bti7535.utilities.Tuple;
+import ch.bfh.bti7535.w2017.red.utilities.RandomSplitList;
+import ch.bfh.bti7535.w2017.red.utilities.Tuple;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;

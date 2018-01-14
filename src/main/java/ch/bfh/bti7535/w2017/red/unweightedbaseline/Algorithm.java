@@ -1,7 +1,6 @@
-package ch.bfh.bti7535.w2017.red.algorithm;
+package ch.bfh.bti7535.w2017.red.unweightedbaseline;
 
 
-import ch.bfh.bti7535.w2017.red.Sentiment;
 import ch.bfh.bti7535.w2017.red.preprocessing.Stem;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ import java.util.stream.Stream;
  * If the result is positive or zero, the sentiment is positive,
  * if negative the sentiment is negative.
  */
-public class BaselineUnweighted {
+public class Algorithm {
 
     private Set<String> positiveWords = null;
     private Set<String> negativeWords = null;
@@ -29,7 +28,7 @@ public class BaselineUnweighted {
      * Constructor which loads the two word lists from disk
      * @param stem If the words in the word list should be stemmed
      */
-    public BaselineUnweighted(boolean stem) {
+    public Algorithm(boolean stem) {
         try {
             List<String> positiveWordsList = Files.readAllLines(Paths.get("src/main/resources/positive-words.txt"));
             List<String> negativeWordsList = Files.readAllLines(Paths.get("src/main/resources/negative-words.txt"));

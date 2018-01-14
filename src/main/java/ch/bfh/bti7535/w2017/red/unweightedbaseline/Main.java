@@ -1,7 +1,6 @@
-package ch.bfh.bti7535.w2017.red;
+package ch.bfh.bti7535.w2017.red.unweightedbaseline;
 
 
-import ch.bfh.bti7535.w2017.red.algorithm.BaselineUnweighted;
 import ch.bfh.bti7535.w2017.red.preprocessing.*;
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Evaluate the Baseline algorithm and find out which preprocessor is good/bad
+ * Evaluate the Main algorithm and find out which preprocessor is good/bad
  * in combination with other preprocessors.
  *
  * Results:
@@ -22,14 +21,14 @@ import java.util.stream.Stream;
  *
  * TL/DR: All preprocessors are neutral/reduce the accuracy
  */
-public class Baseline {
+public class Main {
     private List<List<String>> positiveWords;
     private List<List<String>> negativeWords;
-    private BaselineUnweighted stemmedAlgorithm;
-    private BaselineUnweighted algorithm;
+    private Algorithm stemmedAlgorithm;
+    private Algorithm algorithm;
 
     public static void main(String args[]) {
-        Baseline baseline = new Baseline();
+        Main baseline = new Main();
         baseline.loadAndTokenize();
 
         System.out.println("lowercase, stopwords, stem, stem words");
@@ -68,8 +67,8 @@ public class Baseline {
                 .map(Tokenize::tokenize)
                 .collect(Collectors.toList());
 
-        this.stemmedAlgorithm = new BaselineUnweighted(true);
-        this.algorithm = new BaselineUnweighted(false);
+        this.stemmedAlgorithm = new Algorithm(true);
+        this.algorithm = new Algorithm(false);
     }
 
     /**
@@ -82,7 +81,7 @@ public class Baseline {
      * @return the accuracy in percent
      */
     public double evaluate(boolean lowerCase, boolean stopWords, boolean stem, boolean stemWords) {
-        BaselineUnweighted algorithm;
+        Algorithm algorithm;
         if (stemWords) {
             algorithm = this.stemmedAlgorithm;
         } else {

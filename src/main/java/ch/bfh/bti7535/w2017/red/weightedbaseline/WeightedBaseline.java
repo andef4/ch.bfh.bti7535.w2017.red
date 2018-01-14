@@ -1,11 +1,10 @@
-package ch.bfh.bti7535.w2017.red;
+package ch.bfh.bti7535.w2017.red.weightedbaseline;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import ch.bfh.bti7535.w2017.red.SentiWordNetSet.SynsetTerm;
 import ch.bfh.bti7535.w2017.red.preprocessing.LoadFiles;
 import ch.bfh.bti7535.w2017.red.preprocessing.Tokenize;
 import net.sf.extjwnl.JWNLException;
@@ -83,8 +82,8 @@ public class WeightedBaseline
 								continue;
 							}
 
-							final List<SynsetTerm> lstTerms = xSentiSet.lookupAllWords(strWord);
-							for(final SynsetTerm xTerm : lstTerms)
+							final List<SentiWordNetSet.SynsetTerm> lstTerms = xSentiSet.lookupAllWords(strWord);
+							for(final SentiWordNetSet.SynsetTerm xTerm : lstTerms)
 							{
 								dScore += (xTerm.score() / (double) xTerm.senseNumber());
 								dSum += 1.0 / (double) xTerm.senseNumber();
@@ -112,8 +111,8 @@ public class WeightedBaseline
 								continue;
 							}
 
-							final List<SynsetTerm> lstTerms = xSentiSet.lookupAllWords(strWord);
-							for(final SynsetTerm xTerm : lstTerms)
+							final List<SentiWordNetSet.SynsetTerm> lstTerms = xSentiSet.lookupAllWords(strWord);
+							for(final SentiWordNetSet.SynsetTerm xTerm : lstTerms)
 							{
 								dScore += (xTerm.score() / (double) xTerm.senseNumber());
 								dSum += 1.0 / (double) xTerm.senseNumber();

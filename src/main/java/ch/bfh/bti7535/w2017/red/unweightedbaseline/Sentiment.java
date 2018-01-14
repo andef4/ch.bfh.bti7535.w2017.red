@@ -1,4 +1,4 @@
-package ch.bfh.bti7535.w2017.red;
+package ch.bfh.bti7535.w2017.red.unweightedbaseline;
 
 /**
  * Positive or negative sentiment
