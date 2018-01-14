@@ -1,0 +1,22 @@
+This Python program needs the following libraries to run:
+
+- nltk (plus several corpora, run nltk.download()
+- scikit-learn
+- scipy
+- pandas
+- numpy
+
+-> Adjust classifiers and saving of corpora and/or trained classifiers to your needs in Sentiment-Analyzer.py
+-> View measures for text normalization in normalization.py
+-> View feature matrix generator in utils.py
+
+Source data for SentimentAnalyzer:
+Training and test data set have to be .csv-files (2 columns: "review" (text) and "sentiment" (positive/negative). You
+can generate such a file with the script in data_extraction.py
+
+The most important function is probably the normalize_corpus(...)-function in normalization.py, as it does a lot of
+work in cleaning up the texts from the source. There are lots of possibilities for modifications - just as there are
+lots of parameters to be tinkered with for each individual classifier.
+
+Source data for training used in this assignment:
+http://ai.stanford.edu/~amaas/data/sentiment/

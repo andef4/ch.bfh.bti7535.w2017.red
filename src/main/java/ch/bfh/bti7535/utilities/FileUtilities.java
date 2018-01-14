@@ -13,11 +13,15 @@ public final class FileUtilities
 	{
 	}
 
+	/**
+	 * Reads all lines of a file and returns them as a stream
+	 * @param strPath file path
+	 * @return stream of all lines
+	 */
 	public static Stream<String> readAllLines(final String strPath)
 	{
-		try
+		try(final BufferedReader xReader = new BufferedReader(new InputStreamReader(new FileInputStream(strPath))))
 		{
-			final BufferedReader xReader = new BufferedReader(new InputStreamReader(new FileInputStream(strPath)));
 			return xReader.lines();
 		}
 		catch(final IOException xException)
