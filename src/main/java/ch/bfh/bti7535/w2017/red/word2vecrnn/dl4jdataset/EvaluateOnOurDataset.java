@@ -43,7 +43,7 @@ public class EvaluateOnOurDataset {
                 negativeFiles, wordVectors, batchSize, truncateReviewsToLength);
 
         System.out.println("Loading network...");
-        MultiLayerNetwork net = ModelSerializer.restoreMultiLayerNetwork("./data/rnn-original-3.obj");
+        MultiLayerNetwork net = ModelSerializer.restoreMultiLayerNetwork("./src/main/resources/rnn-25k-epoch-3.obj");
 
         System.out.println("Starting evaluation...");
         Evaluation evaluation = net.evaluate(test);
