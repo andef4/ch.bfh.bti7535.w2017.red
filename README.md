@@ -27,3 +27,7 @@ class.
 
 The deep learning algorithms require quite a bit of memory, the maximum heap space has
 to be increased with the "-Xm8G" JVM option (more memory is even better).
+
+### Comparison with Python
+We implemented some algorithms in Python to compare it with the Java version.
+How to run this programs is documented in python/info.txt.
