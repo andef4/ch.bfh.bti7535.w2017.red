@@ -7,7 +7,7 @@ All algorithms are in the package ch.bfh.bti7535.w2017.red.
 * Naive bayes with part-of-speech tagging (NaiveBayesAlgorithmPOS.java)
 * Unweighted Baseline (unweightedbaseline/Main.java)
 * Weighted Baseline (weightedbaseline/WeightedBaseline.java)
-* Deep learning with LSTM and RNN neuronal network
+* Deep learning with LSTM and RNN neural network
   * Training and evaluation with the small 2000 reviews dataset (word2vecrnn/ourdataset/Word2VecSentimentRNN.java)
   * Training with the big 25000 dataset, evaluation with the small 2000 reviews dataset:
     * Training: word2vecrnn/dl4jdataset/Word2VecSentimentRNN.java
